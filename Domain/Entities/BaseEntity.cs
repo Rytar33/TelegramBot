@@ -8,7 +8,7 @@ public abstract class BaseEntity
     /// <summary>
     /// Идентификатор
     /// </summary>
-    public Guid Id { get; }
+    public Guid Id { get; protected set; }
 
     public override bool Equals(object? obj)
         => obj is not null

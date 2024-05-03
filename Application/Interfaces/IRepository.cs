@@ -4,7 +4,7 @@ namespace Application.Interfaces;
 
 public interface IRepository<TEntity> where TEntity : BaseEntity
 {
-    Task<TEntity> GetById(Guid id);
+    Task<TEntity> GetByIdOrThrow(Guid id);
 
     Task<IEnumerable<TEntity>> GetAll();
 

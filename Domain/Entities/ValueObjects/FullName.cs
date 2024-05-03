@@ -36,7 +36,10 @@ public class FullName : BaseValueObject
             ? $"{LastName} {FirstName} {MiddleName}"
             : $"{LastName} {FirstName}";
 
-    public FullName Update(string? firstName, string? lastName, string? middleName)
+    public FullName Update(
+        string? firstName = null,
+        string? lastName = null,
+        string? middleName = null)
     {
         if (firstName != null)
             FirstName = firstName;
@@ -44,7 +47,6 @@ public class FullName : BaseValueObject
             LastName = lastName;
         if (middleName != null)
             MiddleName = middleName;
-        new FullNameValidator(nameof(FullName)).ValidateWithErrors(this);
-        return this;
+        return new FullNameValidator(nameof(FullName)).ValidateWithErrors(this);
     }
 }

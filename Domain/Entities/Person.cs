@@ -10,6 +10,11 @@ namespace Domain.Entities;
 /// </summary>
 public class Person : BaseEntity
 {
+    /// <summary>
+    /// Не использовать пустой конструктор! Он нужен для миграции в ORM системе
+    /// </summary>
+    /// <exception cref="ArgumentNullException"></exception>
+    public Person() => throw new ArgumentNullException();
     public Person(
         FullName fullName,
         Gender gender,
@@ -55,9 +60,26 @@ public class Person : BaseEntity
     /// </summary>
     public string Telegram { get; private set; }
 
-    public Person Update(FullName fullName)
+    public List<CustomField<string>> CustomFields { get; private set; }
+    
+    public Person Update(
+        string? firstName = null,
+        string? lastName = null,
+        string? middleName = null,
+        Gender? gender = null, 
+        DateTime? birthDate = null,
+        string? phoneNumber = null,
+        string? telegram = null)
     {
-        FullName = this.FullName.Update(fullName.FirstName, fullName.LastName, fullName.MiddleName);
+        FullName = FullName.Update(firstName, lastName, middleName);
+        if (gender != null)
+            Gender = gender.Value;
+        if (birthDate != null)
+            BirthDate = new BirthDateValidator(nameof(birthDate)).ValidateWithErrors(birthDate.Value);
+        if (phoneNumber != null)
+            PhoneNumber = new PhoneValidator(nameof(phoneNumber)).ValidateWithErrors(phoneNumber);
+        if (telegram != null)
+            Telegram = new TelegramValidator(nameof(telegram)).ValidateWithErrors(telegram);
         return this;
     }
 }

@@ -28,14 +28,6 @@ public class PersonProfile : Profile
         #endregion
 
         #region Requests Map
-        CreateMap<PersonUpdateResponse, Person>()
-            .ConstructUsing(dto => new Person(
-                new FullName(dto.FullName.FirstName, dto.FullName.LastName, dto.FullName.MiddleName),
-                dto.Gender,
-                dto.BirthDate,
-                dto.PhoneNumber,
-                dto.Telegram));
-
         CreateMap<PersonCreateRequest, Person>()
             .ConstructUsing(dto => new Person(
                 new FullName(dto.FullName.FirstName, dto.FullName.LastName, dto.FullName.MiddleName),

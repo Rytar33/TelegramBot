@@ -7,15 +7,11 @@ namespace Application.Services;
 
 public class PersonService(
     IPersonRepository personRepository,
-    IMapper mapper)
+    IMapperBase mapper)
 {
-    private readonly IPersonRepository _personRepository = personRepository;
-
-    private readonly IMapper _mapper = mapper;
-
     public async Task<PersonGetAllResponse> GetAll(PersonGetAllFilterRequest? filterRequest = null)
     {
-        var persons = await _personRepository.GetAll();
+        var persons = await personRepository.GetAll();
         if (filterRequest != null)
         {
             if (filterRequest.Search != null)
@@ -30,26 +26,34 @@ public class PersonService(
             if (filterRequest.AgeTo != null)
                 persons = persons.Where(p => p.Age <= filterRequest.AgeTo);
         }
-        return _mapper.Map<PersonGetAllResponse>(persons);
+        return mapper.Map<PersonGetAllResponse>(persons);
     }
 
     public async Task<PersonGetByIdResponse> GetById(Guid id)
-        => _mapper.Map<PersonGetByIdResponse>(await _personRepository.GetById(id));
+        => mapper.Map<PersonGetByIdResponse>(await personRepository.GetByIdOrThrow(id));
 
     public async Task<PersonCreateResponse> Create(PersonCreateRequest personCreateRequest)
     {
-        var person = _mapper.Map<Person>(personCreateRequest);
-        await _personRepository.Create(person);
-        return _mapper.Map<PersonCreateResponse>(person);
+        var person = mapper.Map<Person>(personCreateRequest);
+        await personRepository.Create(person);
+        return mapper.Map<PersonCreateResponse>(person);
     }
 
     public async Task<PersonUpdateResponse> Update(PersonUpdateRequest personUpdateRequest)
     {
-        await GetById(personUpdateRequest.Id);
-        var person = await _personRepository.Update(_mapper.Map<Person>(personUpdateRequest));
-        return _mapper.Map<PersonUpdateResponse>(person);
+        var person = await personRepository.GetByIdOrThrow(personUpdateRequest.Id);
+        person.Update(
+            personUpdateRequest.FirstName,
+            personUpdateRequest.LastName,
+            personUpdateRequest.MiddleName,
+            personUpdateRequest.Gender,
+            personUpdateRequest.BirthDate,
+            personUpdateRequest.PhoneNumber,
+            personUpdateRequest.Telegram);
+        var personUpdated = await personRepository.Update(person);
+        return mapper.Map<PersonUpdateResponse>(personUpdated);
     }
 
     public async Task Remove(Guid id)
-        => await _personRepository.Remove(GetById(id).GetAwaiter().GetResult().Id);
+        => await personRepository.Remove(id);
 }
