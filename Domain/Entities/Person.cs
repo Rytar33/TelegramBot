@@ -27,17 +27,17 @@ public class Person : BaseEntity
     /// <summary>
     /// Имя
     /// </summary>
-    public FullName FullName { get; init; }
+    public FullName FullName { get; private set; }
     
     /// <summary>
     /// Гендер
     /// </summary>
-    public Gender Gender { get; init; }
+    public Gender Gender { get; private set; }
     
     /// <summary>
     /// Дата рождения
     /// </summary>
-    public DateTime BirthDate { get; init; }
+    public DateTime BirthDate { get; private set; }
 
     /// <summary>
     /// Возраст
@@ -48,10 +48,16 @@ public class Person : BaseEntity
     /// <summary>
     /// Номер телефона
     /// </summary>
-    public string PhoneNumber { get; init; }
+    public string PhoneNumber { get; private set; }
     
     /// <summary>
     /// Никнейм в телеграм
     /// </summary>
-    public string Telegram { get; init; }
+    public string Telegram { get; private set; }
+
+    public Person Update(FullName fullName)
+    {
+        FullName = this.FullName.Update(fullName.FirstName, fullName.LastName, fullName.MiddleName);
+        return this;
+    }
 }

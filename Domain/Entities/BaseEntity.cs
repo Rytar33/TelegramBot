@@ -6,14 +6,14 @@ namespace Domain.Entities;
 public abstract class BaseEntity
 {
     /// <summary>
-    /// Идентификатор сущности
+    /// Идентификатор
     /// </summary>
     public Guid Id { get; }
 
     public override bool Equals(object? obj)
         => obj is not null
            && obj is BaseEntity entity
-           && Id != entity.Id
+           && Id == entity.Id
            && GetHashCode() == entity.GetHashCode();
     
     public override int GetHashCode()
