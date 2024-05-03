@@ -1,6 +1,10 @@
+using Application.Dtos.Person;
 using Application.Interfaces;
+using Application.MappingProfiles;
 using Application.Repositorys;
 using Application.Services;
+using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Infrastructure;
 
@@ -24,7 +28,17 @@ public class Program
         }
 
         app.UseHttpsRedirection();
-        
+
+        app.MapGet("api/v0/Person", async (PersonService personService) 
+            => Results.Ok(await personService.GetAll()));
+        app.MapGet("api/v0/Person/{id:guid}", async ([FromRoute] Guid id, PersonService personService) 
+            => Results.Ok(await personService.GetById(id)));
+        app.MapPost("api/v0/Person", async (PersonCreateRequest personCreateRequest, PersonService personService) 
+            => Results.Ok(await personService.Create(personCreateRequest)));
+        app.MapPut("api/v0/Person", async (PersonUpdateRequest personUpdateRequest, PersonService personService) 
+            => Results.Ok(await personService.Update(personUpdateRequest)));
+        app.MapDelete("api/v0/Person/{id:guid}", async ([FromRoute] Guid id, PersonService personService) 
+            => Results.Ok(personService.Remove(id)));
         
         app.Run();
     }
